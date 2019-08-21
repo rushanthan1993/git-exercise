@@ -1,0 +1,43 @@
+\begin{tikzpicture}[
+  tangent/.style={
+    decoration={
+      markings,
+      mark=at position #1
+      with {
+        \coordinate (tangent point-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,0pt);
+        \coordinate (tangent unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (1,0pt);
+        \coordinate (tangent orthogonal unit vector-\pgfkeysvalueof{/pgf/decoration/mark info/sequence number}) at (0pt,1);
+      }
+    },
+    postaction=decorate
+  },
+  use tangent/.style={
+    shift=(tangent point-#1),
+    x=(tangent unit vector-#1),
+    y=(tangent orthogonal unit vector-#1)
+  },
+  use tangent/.default=1
+  ]
+
+  \draw[->] (-.5,0) -- (6,0) node(xline)[right] {$x$};
+  \draw[->] (0,-.5) -- (0,6) node(yline)[right] {$y$};
+
+  \draw[tangent=0.2] (1,1) to[out=-30,in=270]
+  coordinate[pos=0.2] (A)
+  coordinate[pos=0.7] (B)
+  (5,5) node[right] {$y=f(x)$};
+
+  \draw[use tangent, name path=tan] (-2,0) -- (3.5,0) node[right] {$y=L(x)$};
+  \draw[dashed] (A) -- (A |- xline) node(E)[below] {$a$};
+  \draw[dashed, name path=horiz, shorten <= -.2cm]
+  (A -| yline) node[left, xshift=-.2cm] {$f(a)$} -- (A -| B);
+  \draw[dashed, name path=vert] (B) -- (B |- xline) node(F)[below] {$x$};
+
+  \fill[name intersections={of=horiz and vert}] (intersection-1) circle (.2pt) coordinate(D);
+  \fill[name intersections={of=tan and vert}] (intersection-1) circle (.2pt) coordinate(C);
+
+  \draw[thick,decoration={brace, mirror, raise=.2cm},decorate] (E) -- node[below, yshift=-.3cm] {$x-a$} (F);
+  \draw[thick,decoration={brace, raise=.2cm},decorate] (B) -- node[right, xshift=.2cm] {$E(x)$} (C);
+
+  \draw[thick,decoration={brace, raise=.2cm},decorate] (C) -- node[right, xshift=.2cm] {$f’(a)(x-a)$} (D);
+\end{tikzpicture}
